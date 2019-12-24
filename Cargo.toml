@@ -1,0 +1,25 @@
+[package]
+authors = ["Michael Aaron Murphy <mmstick@pm.me>"]
+categories = [ "parser-implementations" ]
+description = "Zero-copy parser & futures codec for Debian control files"
+edition = "2018"
+keywords = [ "debian", "control" ]
+license = "MIT OR Apache-2.0"
+name = "deb-control"
+readme = "README.md"
+repository = "https://github.com/pop-os/deb-control"
+version = "0.1.0"
+
+[dependencies]
+bytes = "0.5"
+derive_more = "0.99"
+derive-new = "0.5"
+futures = "0.3"
+futures_codec = "0.3"
+memchr = "2"
+twoway = "0.2.1"
+
+[dev-dependencies]
+async-std = "1"
+better-panic = "0.2"
+fomat-macros = "0.3"
