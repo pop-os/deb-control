@@ -15,7 +15,8 @@ bytes = "0.5"
 derive_more = "0.99"
 derive-new = "0.5"
 futures = "0.3"
-futures_codec = "0.3"
+# futures_codec = "0.3"
+futures_codec = { git = "https://github.com/mmstick/futures-codec", branch = "eof" }
 memchr = "2"
 twoway = "0.2.1"
 

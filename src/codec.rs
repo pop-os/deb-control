@@ -18,4 +18,9 @@ impl Decoder for ControlDecoder {
             None => Ok(None),
         }
     }
+
+    fn decode_eof(&mut self, src: &mut BytesMut) -> Result<Option<Self::Item>, Self::Error> {
+        let buf = src.split_to(src.len());
+        Ok(Some(buf))
+    }
 }

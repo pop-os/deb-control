@@ -16,11 +16,23 @@ impl<'a> Iterator for Control<'a> {
     type Item = (&'a str, Field<'a>);
 
     fn next(&mut self) -> Option<Self::Item> {
+        let (kend, vstart);
         let source = self.source.as_bytes();
 
-        let mut vend = memchr(b'\n', source)?;
-        let kend = memchr(b':', &source[..vend])?;
-        let vstart = kend + 2;
+        let mut vend = match memchr(b'\n', source) {
+            Some(vend) => vend,
+            None => {
+                kend = memchr(b':', source)?;
+                vstart = kend + 2;
+                let key = &self.source[..kend];
+                let value = Field::Single(&self.source[vstart..]);
+                self.source = "";
+                return Some((key, value));
+            }
+        };
+
+        kend = memchr(b':', &source[..vend])?;
+        vstart = kend + 2;
         let mut eof = false;
 
         let value = if kend == vend - 1 {
@@ -44,7 +56,7 @@ impl<'a> Iterator for Control<'a> {
         };
 
         let key = &self.source[..kend];
-        self.source = &self.source[vend + if eof { 0 } else { 1 }..];
+        self.source = if eof { "" } else { &self.source[vend + 1..] };
 
         Some((key, value))
     }
