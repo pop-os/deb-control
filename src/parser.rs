@@ -6,14 +6,21 @@ pub struct Control<'a> {
 }
 
 #[derive(Debug, Display)]
-pub enum Field<'a> {
-    Single(&'a str),
-    Folded(&'a str),
-    Multiline(&'a str),
+pub enum Kind {
+    Single,
+    Folded,
+    Multiline,
+}
+
+#[derive(Debug)]
+pub struct Entry<'a> {
+    pub key: &'a str,
+    pub value: &'a str,
+    pub kind: Kind,
 }
 
 impl<'a> Iterator for Control<'a> {
-    type Item = (&'a str, Field<'a>);
+    type Item = Entry<'a>;
 
     fn next(&mut self) -> Option<Self::Item> {
         let (kend, vstart);
@@ -25,9 +32,13 @@ impl<'a> Iterator for Control<'a> {
                 kend = memchr(b':', source)?;
                 vstart = kend + 2;
                 let key = &self.source[..kend];
-                let value = Field::Single(&self.source[vstart..]);
+                let value = &self.source[vstart..];
                 self.source = "";
-                return Some((key, value));
+                return Some(Entry {
+                    key,
+                    value,
+                    kind: Kind::Single,
+                });
             }
         };
 
@@ -35,14 +46,14 @@ impl<'a> Iterator for Control<'a> {
         vstart = kend + 2;
         let mut eof = false;
 
-        let value = if kend == vend - 1 {
+        let (value, kind) = if kend == vend - 1 {
             vend += 1;
 
             let values = fetch_lines(source, vend);
             vend = values.0;
             eof = values.1;
 
-            Field::Multiline(&self.source[vstart..vend])
+            (&self.source[vstart..vend], Kind::Multiline)
         } else if is_space(source, vend + 1) {
             vend += 1;
 
@@ -50,15 +61,15 @@ impl<'a> Iterator for Control<'a> {
             vend = values.0;
             eof = values.1;
 
-            Field::Folded(&self.source[vstart..vend])
+            (&self.source[vstart..vend], Kind::Folded)
         } else {
-            Field::Single(&self.source[vstart..vend])
+            (&self.source[vstart..vend], Kind::Single)
         };
 
         let key = &self.source[..kend];
         self.source = if eof { "" } else { &self.source[vend + 1..] };
 
-        Some((key, value))
+        Some(Entry { key, value, kind })
     }
 }
 

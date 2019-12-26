@@ -1,3 +1,5 @@
+//! Parser testing
+
 #[macro_use]
 extern crate fomat_macros;
 
@@ -117,8 +119,8 @@ fn main() {
     better_panic::install();
 
     pintln!(
-        for (key, value) in Control::new(RELEASE) {
-            (key) ": " (value) "\n"
+        for entry in Control::new(RELEASE) {
+            (entry.key) ": " (entry.value) "\n"
         }
     );
 
@@ -134,8 +136,8 @@ fn main() {
 
             pintln!(
                 "Package {\n"
-                for (key, value) in Control::new(&event) {
-                    "\t" (key) ": " (value) "\n"
+                for entry in Control::new(&event) {
+                    "\t" (entry.key) ": " (entry.value) "\n"
                 }
                 "}"
             )

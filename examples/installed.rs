@@ -1,4 +1,4 @@
-/// Display package statuses
+//! Display packages which are installed.
 
 #[macro_use]
 extern crate fomat_macros;
@@ -23,12 +23,10 @@ async fn async_main() {
         let event = event.unwrap();
         let event = str::from_utf8(&event).expect("not UTF8");
 
-        pintln!(
-            "Package {\n"
-            for entry in Control::new(&event) {
-                "\t" (entry.key) ": " (entry.value) "\n"
-            }
-            "}"
-        )
+        let mut control = Control::new(&event);
+
+        let package = control.next().unwrap();
+
+        pintln!((package.value));
     }
 }
