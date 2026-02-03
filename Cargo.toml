@@ -8,7 +8,7 @@ license = "MIT OR Apache-2.0"
 
 readme = "README.md"
 repository = "https://github.com/pop-os/deb-control"
-version = "1.0.0"
+version = "1.0.1"
 
 [dependencies]
 asynchronous-codec = "0.7.0"

@@ -1,3 +1,4 @@
+pub use asynchronous_codec;
 pub mod codec;
 pub mod parser;
 
