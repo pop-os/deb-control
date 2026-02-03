@@ -1,14 +1,11 @@
 //! Display packages which are installed.
 
-#[macro_use]
-extern crate fomat_macros;
-
 const STATUS_FILE: &str = "/var/lib/dpkg/status";
 
 use async_std::fs::File;
-use deb_control::prelude::*;
+use asynchronous_codec::FramedRead;
+use deb_control_codec::prelude::*;
 use futures::{executor, prelude::*};
-use futures_codec::FramedRead;
 use std::str;
 fn main() {
     executor::block_on(async_main());
@@ -27,6 +24,6 @@ async fn async_main() {
 
         let package = control.next().unwrap();
 
-        pintln!((package.value));
+        println!("{}", package.value);
     }
 }

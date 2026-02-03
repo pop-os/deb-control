@@ -1,15 +1,30 @@
 use memchr::memchr;
 
-#[derive(new)]
 pub struct Control<'a> {
     source: &'a str,
 }
 
-#[derive(Debug, Display)]
+impl<'a> Control<'a> {
+    pub fn new(source: &'a str) -> Self {
+        Self { source }
+    }
+}
+
+#[derive(Debug)]
 pub enum Kind {
     Single,
     Folded,
     Multiline,
+}
+
+impl std::fmt::Display for Kind {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            Kind::Single => "Single",
+            Kind::Folded => "Folded",
+            Self::Multiline => "Multiline",
+        })
+    }
 }
 
 #[derive(Debug)]

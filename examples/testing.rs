@@ -1,12 +1,8 @@
 //! Parser testing
 
-#[macro_use]
-extern crate fomat_macros;
-
-use deb_control::prelude::*;
-
+use asynchronous_codec::FramedRead;
+use deb_control_codec::prelude::*;
 use futures::{executor, io::AllowStdIo, prelude::*};
-use futures_codec::FramedRead;
 use std::{io::Cursor, str};
 
 const RELEASE: &str = r#"Architectures: amd64 i386
@@ -116,15 +112,13 @@ Original-Maintainer: Debian Acpi Team <pkg-acpi-devel@lists.alioth.debian.org>
 Homepage: http://sourceforge.net/projects/acpiclient"#;
 
 fn main() {
-    better_panic::install();
-
-    pintln!(
+    fomat_macros::pintln!(
         for entry in Control::new(RELEASE) {
             (entry.key) ": " (entry.value) "\n"
         }
     );
 
-    pintln!();
+    fomat_macros::pintln!();
 
     let input = AllowStdIo::new(Cursor::new(STATUS));
     let mut stream = FramedRead::new(input, ControlDecoder::default());
@@ -134,7 +128,7 @@ fn main() {
             let event = event.unwrap();
             let event = str::from_utf8(&event).expect("not UTF8");
 
-            pintln!(
+            fomat_macros::pintln!(
                 "Package {\n"
                 for entry in Control::new(&event) {
                     "\t" (entry.key) ": " (entry.value) "\n"
